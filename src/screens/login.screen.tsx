@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Pressable,
+  Button,
   Alert,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -16,6 +17,8 @@ import { useLanguage } from "../contexts/languaje.context";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../contexts/theme.context";
 import { useAuth } from "../contexts/auth.context";
+
+import * as Sentry from '@sentry/react-native';
 
 import { useGoogleAuth } from "../services/googleAuth.service";
 import axios from "axios";
@@ -149,6 +152,11 @@ const LoginScreen = () => {
       {/* boton de google */}
       <Pressable style={styles.buttonGoogle}>
         <Text style={styles.buttonText}>{t("login_google")}</Text>
+      </Pressable>
+
+      <Pressable style={styles.buttonError}
+        onPress={() => { Sentry.captureException(new Error('First error')) }}>
+        <Text style={[styles.buttonText, {color: "#fff"}]}>Boton para tirar errores</Text>
       </Pressable>
 
       {/* registro */}

@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginRequest } from "../services/auth.service";
 import axios from "axios";
+import * as Sentry from '@sentry/react-native';
 
 interface AuthContextProps {
     token: string | null;
@@ -35,7 +36,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             // Configura el token para futuras peticiones HTTP
             axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`; // <-----------------
         } catch (error: any) {
-            // console.error("Error de login:", error.response?.data || error.message);
             throw new Error("Credenciales invalidas o error de conexion");
         } finally {
             setLoading(false);
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         delete axios.defaults.headers.common["Authorization"]; // <-----------------
     };
 
-    // Cargar token guardado al iniciar la app (opcional)
+    // Cargar token guardado al iniciar la app
     React.useEffect(() => {
         const loadToken = async () => {
             const storedToken = await AsyncStorage.getItem("token");

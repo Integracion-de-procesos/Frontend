@@ -19,12 +19,31 @@ import { RecordProvider } from "./src/contexts/record.context";
 import { VideosProvider } from "./src/contexts/videos.context";
 import { ProfileProvider } from "./src/contexts/profile.context";
 import { LanguageProvider } from "./src/contexts/languaje.context";
-
 import "./src/locale/config"; // inicializa i18next
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://bbaf03c0a6de8b1bdf44ea86b8e0144e@o4510343611678720.ingest.de.sentry.io/4510343619018832',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-export default function App() {
+export default Sentry.wrap(function App() {
   return (
     <LanguageProvider>
       <ProfileProvider>
@@ -55,4 +74,4 @@ export default function App() {
     </LanguageProvider>
 
   );
-}
+});

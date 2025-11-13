@@ -67,6 +67,15 @@ export const loginScreenStyles = StyleSheet.create({
     borderRadius: 12,
     flexDirection: "row",
     justifyContent: "center",
+    marginBottom: 20
+  },
+  buttonError: {
+    backgroundColor: "#6c0067ff",
+    paddingVertical: 15,
+    borderRadius: 12,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20
   },
   error: {
     color: "#ff0000ff",
