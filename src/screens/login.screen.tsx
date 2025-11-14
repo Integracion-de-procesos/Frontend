@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { loginScreenStyles as styles } from "../styles/login.styles";
 import { validateLogin } from "../utils/validator.util";
 import {
@@ -31,13 +31,18 @@ type LoginScreenNavigationProp = StackNavigationProp<
 const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const { theme } = useTheme()
-  const { loading, login } = useAuth()
+  const { loading, login, isAuthenticated } = useAuth()
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useLanguage()
+
+  useEffect(() => {
+    if (isAuthenticated)
+      navigation.navigate("Home");
+  }, [isAuthenticated]);
 
   const handleLoginPress = async () => {
     const error = validateLogin(email, password);
@@ -156,7 +161,7 @@ const LoginScreen = () => {
 
       <Pressable style={styles.buttonError}
         onPress={() => { Sentry.captureException(new Error('First error')) }}>
-        <Text style={[styles.buttonText, {color: "#fff"}]}>Boton para tirar errores</Text>
+        <Text style={[styles.buttonText, { color: "#fff" }]}>Boton para tirar errores</Text>
       </Pressable>
 
       {/* registro */}

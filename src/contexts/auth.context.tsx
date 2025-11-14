@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loginRequest } from "../services/auth.service";
+import { loginRequest, logoutRequest } from "../services/auth.service";
 import axios from "axios";
 import * as Sentry from '@sentry/react-native';
 
@@ -44,9 +44,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // Cerrar sesión
     const logout = async () => {
-        setToken(null);
-        await AsyncStorage.removeItem("token");
-        delete axios.defaults.headers.common["Authorization"]; // <-----------------
+        try {
+            await logoutRequest();
+            setToken(null);
+            await AsyncStorage.removeItem("token");
+            delete axios.defaults.headers.common["Authorization"];
+        } catch (error) {
+            throw new Error("Error al cerrar sesión");
+        }
     };
 
     // Cargar token guardado al iniciar la app

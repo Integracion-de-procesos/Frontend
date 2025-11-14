@@ -11,6 +11,7 @@ import { useLanguage } from "../contexts/languaje.context";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/navigation";
+import { useAuth } from "../contexts/auth.context";
 
 const SettingsScreen = () => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -22,6 +23,7 @@ const SettingsScreen = () => {
     const [visible, setVisible] = useState(false);
     const [nombre, setNombre] = useState<string | null>(null);
     const [fadeAnim] = useState(new Animated.Value(0));
+    const { logout } = useAuth()
 
     useEffect(() => {
         const obtenerPerfil = async () => {
@@ -37,7 +39,12 @@ const SettingsScreen = () => {
             setNombre(nombreUsuario)
         };
         obtenerNombre();
-    });
+    }, []);
+
+    const exitSession = async() => {
+        await logout()
+        navigation.navigate("Login")
+    }
 
     const toggleMenu = () => {
         if (visible) {
@@ -151,7 +158,7 @@ const SettingsScreen = () => {
                 <TouchableOpacity
                     style={[styles.optionRow, styles.logoutRow]}
                     activeOpacity={0.7}
-                    onPress={() => navigation.navigate("Login")}
+                    onPress={exitSession}
                 >
                     <Text style={[styles.optionText, { color: "#fff" }]}>
                         {t("settings_closeSession")}

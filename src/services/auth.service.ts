@@ -7,7 +7,7 @@ interface Usuario {
     nombres: string;
     correoElectronico: string;
     imagen: {
-        nombreArchivo ? : string
+        nombreArchivo?: string
     }
 }
 
@@ -18,6 +18,11 @@ interface LoginResponse {
     usuario: Usuario;
 }
 
+interface LogoutResponse {
+    success: boolean;
+    mensaje: string;
+}
+
 export const loginRequest = async (
     email: string,
     password: string
@@ -26,5 +31,11 @@ export const loginRequest = async (
         correoElectronico: email,
         contraseña: password,
     });
+    return response.data;
+};
+
+export const logoutRequest = async (
+): Promise<LogoutResponse> => {
+    const response = await axios.post<LogoutResponse>(`${API_URL}/logout`)
     return response.data;
 };
