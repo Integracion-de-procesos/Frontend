@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginRequest, logoutRequest } from "../services/auth.service";
 import axios from "axios";
-import * as Sentry from '@sentry/react-native';
+import { useGoogleAuth } from "../hooks/googleAuth.hook";
 
 interface AuthContextProps {
     token: string | null;
@@ -21,6 +21,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const { userInfo, signOut } = useGoogleAuth()
 
     const login = async (email: string, password: string) => {
         try {
@@ -45,10 +46,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Cerrar sesión
     const logout = async () => {
         try {
+            // Cerrar sesion en servidor
             await logoutRequest();
             setToken(null);
             await AsyncStorage.removeItem("token");
             delete axios.defaults.headers.common["Authorization"];
+
+            // Cerrar sesion en Google
+            if (userInfo) {
+                await signOut()
+            }
         } catch (error) {
             throw new Error("Error al cerrar sesión");
         }

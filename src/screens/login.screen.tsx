@@ -6,9 +6,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Pressable,
-  Button,
-  Alert,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/navigation";
@@ -17,10 +14,8 @@ import { useLanguage } from "../contexts/languaje.context";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../contexts/theme.context";
 import { useAuth } from "../contexts/auth.context";
-
-import * as Sentry from '@sentry/react-native';
-
-import { useGoogleAuth } from "../services/googleAuth.service";
+import GoogleAuthButton from "../components/googleAuth.component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 type LoginScreenNavigationProp = StackNavigationProp<
@@ -39,12 +34,14 @@ const LoginScreen = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useLanguage()
 
+  const [state, setState] = useState<any>()
+
   useEffect(() => {
     if (isAuthenticated)
       navigation.navigate("Home");
   }, [isAuthenticated]);
 
-  const handleLoginPress = async () => {
+  const standarLoginPress = async () => {
     const error = validateLogin(email, password);
     if (!error) {
       try {
@@ -57,22 +54,6 @@ const LoginScreen = () => {
       setErrorMessage(error);
     }
   };
-
-  {/*
-    const handleLoginBackend = async (googleToken: string) => {
-      try {
-        const response = await axios.post(
-          "https://integracion.test-drive.org/api/auth/google",
-          { token: googleToken }
-        );
-        const { jwt } = response.data;
-        Alert.alert("Inicio de sesion exitoso", `Token interno: ${jwt}`);
-      } catch (error: any) {
-        Alert.alert("Error", "No se pudo iniciar sesion con Google");
-      }
-    };
-    const { promptAsync } = useGoogleAuth(handleLoginBackend); 
-  */}
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -135,7 +116,7 @@ const LoginScreen = () => {
       {/* boton para iniciar */}
       <TouchableOpacity
         style={[styles.button, { backgroundColor: theme.primary }]}
-        onPress={handleLoginPress}
+        onPress={standarLoginPress}
       >
         <Text style={styles.buttonText}>
           {loading ? t("login_loading") : t("login_startSession")}
@@ -154,15 +135,18 @@ const LoginScreen = () => {
         <View style={{ flex: 1, height: 1, backgroundColor: theme.text }} />
       </View>
 
-      {/* boton de google */}
-      <Pressable style={styles.buttonGoogle}>
-        <Text style={styles.buttonText}>{t("login_google")}</Text>
-      </Pressable>
-
-      <Pressable style={styles.buttonError}
-        onPress={() => { Sentry.captureException(new Error('First error')) }}>
-        <Text style={[styles.buttonText, { color: "#fff" }]}>Boton para tirar errores</Text>
-      </Pressable>
+      <GoogleAuthButton
+        onLoginSuccess={async (data) => {
+          await AsyncStorage.setItem("token", data.token);
+          await AsyncStorage.setItem("idUsuario", data.usuario.idUsuario.toString());
+          await AsyncStorage.setItem("nombreUsuario", data.usuario.nombres)
+          await AsyncStorage.setItem("nombreUsuario", data.usuario.nombres)
+          await AsyncStorage.setItem("profile", "profile.png");
+          // Configura el token para futuras peticiones
+          axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+          navigation.navigate("Home")
+        }}
+      />
 
       {/* registro */}
       <View style={styles.footerContainer}>

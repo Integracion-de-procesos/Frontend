@@ -51,6 +51,12 @@
           "project": "replica",
           "organization": "instituto-politecnico-nacio-32"
         }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+        }
       ]
     ],
     "extra": {

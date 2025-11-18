@@ -6,9 +6,9 @@ interface Usuario {
     idUsuario: number;
     nombres: string;
     correoElectronico: string;
-    imagen: {
-        nombreArchivo?: string
-    }
+    imagen?: {
+        nombreArchivo?: string;
+    } | null;
 }
 
 interface LoginResponse {
@@ -27,15 +27,30 @@ export const loginRequest = async (
     email: string,
     password: string
 ): Promise<LoginResponse> => {
-    const response = await axios.post<LoginResponse>(`${API_URL}/login`, {
-        correoElectronico: email,
-        contraseña: password,
-    });
+    const response = await axios.post<LoginResponse>(
+        `${API_URL}/login`,
+        {
+            correoElectronico: email,
+            contraseña: password,
+        }
+    );
+
     return response.data;
 };
 
 export const logoutRequest = async (
 ): Promise<LogoutResponse> => {
-    const response = await axios.post<LogoutResponse>(`${API_URL}/logout`)
+    const response = await axios.post<LogoutResponse>
+        (`${API_URL}/logout`)
+    return response.data;
+}
+
+export const googleLoginRequest = async (
+    idToken: string
+): Promise<LoginResponse> => {
+    const response = await axios.post<LoginResponse>(
+        `${API_URL}/auth/google`,
+        { idToken },
+    );
     return response.data;
 };
