@@ -7,28 +7,8 @@ const API_URL = "https://integracion.test-drive.org/api/images";
 interface SubirImagenResponse {
     success: boolean;
     message: string;
-    nombreArchivo?: string;
+    rutaImagen: string;
 }
-
-export const eliminarImagen = async () => {
-    try {
-        const idUsuario = await AsyncStorage.getItem("idUsuario");
-        if (!idUsuario) {
-            throw new Error("No se encontró el idUsuario en AsyncStorage");
-        }
-        const response = await axios.delete(`${API_URL}/${idUsuario}`);
-        return {
-            success: true,
-            message: response.data?.message || "Imagen eliminada correctamente.",
-        };
-    } catch (error: any) {
-        return {
-            success: false,
-            message:
-                error.response?.data?.message || "Error al eliminar la imagen del servidor.",
-        };
-    }
-};
 
 export const subirImagen = async (imageUri: string): Promise<SubirImagenResponse> => {
     try {
@@ -54,14 +34,10 @@ export const subirImagen = async (imageUri: string): Promise<SubirImagenResponse
         return {
             success: response.data.success,
             message: response.data.message,
-            nombreArchivo: response.data.data.nombreArchivo
+            rutaImagen: response.data.data.rutaImagen
         };
     } catch (error: any) {
-        return {
-            success: false,
-            message:
-                error.response?.data?.message ||
-                "Error al subir la imagen al servidor."
-        };
+        console.error("Error al subir la imagen:", error.message);
+        throw new Error("No se pudieron obtener videos del servidor");
     }
 };

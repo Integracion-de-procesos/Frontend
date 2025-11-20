@@ -19,7 +19,7 @@ const SettingsScreen = () => {
     const { changed } = useProfile()
     const { t, lang, setLang } = useLanguage();
 
-    const [profile, setProfile] = useState("");
+    const [profile, setProfile] = useState<string | null>(null);
     const [visible, setVisible] = useState(false);
     const [nombre, setNombre] = useState<string | null>(null);
     const [fadeAnim] = useState(new Animated.Value(0));
@@ -27,8 +27,8 @@ const SettingsScreen = () => {
 
     useEffect(() => {
         const obtenerPerfil = async () => {
-            const perfil = await AsyncStorage.getItem("profile");
-            setProfile(perfil || "profile.png");
+            const perfil = await AsyncStorage.getItem("perfil");
+            setProfile(perfil);
         };
         obtenerPerfil();
     }, [changed]); // cada vez que cambia el contexto
@@ -41,7 +41,7 @@ const SettingsScreen = () => {
         obtenerNombre();
     }, []);
 
-    const exitSession = async() => {
+    const exitSession = async () => {
         await logout()
         navigation.navigate("Login")
     }
@@ -75,9 +75,7 @@ const SettingsScreen = () => {
                     { backgroundColor: theme.primary || "#3B62FF" },
                 ]}>
                 <Image
-                    source={{
-                        uri: `https://integracion.test-drive.org/uploads/${profile}`,
-                    }}
+                    source={{ uri: `${profile}` }}
                     style={[styles.profileImage, { backgroundColor: "#fff" }
                     ]} />
                 <Text style={[styles.profileName, { color: "#fff" }]}>

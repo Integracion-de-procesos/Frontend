@@ -42,14 +42,16 @@ export default function GaleriaScreen() {
             }
 
             const resSubir = await subirImagen(image);
-            if (!resSubir.success) {
+            if (resSubir.success) {
+                await AsyncStorage.setItem("perfil", resSubir.rutaImagen)
+                toggleChanged()
+                Alert.alert(t("galery_success1"), t("galery_success2"));
+                navigation.goBack();
+            } else {
                 Alert.alert(t("galery_error"), resSubir.message);
                 return;
             }
-            await AsyncStorage.setItem("profile", resSubir.nombreArchivo ?? "profile.png")
-            toggleChanged()
-            Alert.alert(t("galery_success1"), t("galery_success2"));
-            navigation.goBack();
+
         } catch (err) {
             Alert.alert(t("galery_error1"), t("galery_error2"));
         }

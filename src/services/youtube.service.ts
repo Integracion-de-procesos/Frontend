@@ -22,11 +22,6 @@ export const YouTubeService = {
             const lat = parseFloat(latStr);
             const lon = parseFloat(lonStr);
 
-            if (isNaN(lat) || isNaN(lon)) {
-                console.error("Error al convertir coordenadas:", latStr, lonStr);
-                return [];
-            }
-
             // Llamada HTTP al backend
             const response = await axios.get(`${API_URL}/populares`, {
                 params: { lat, lon },
@@ -60,8 +55,22 @@ export const YouTubeService = {
                 throw new Error("Debe ingresar una palabra para buscar videos");
             }
 
-            const response = await axios.get(`${API_URL}/buscar`, {
-                params: { q: query },
+            // Obtener coordenadas desde AsyncStorage
+            const latStr = await AsyncStorage.getItem("latitud");
+            const lonStr = await AsyncStorage.getItem("longitud");
+
+            // Validar que existan coordenadas
+            if (!latStr || !lonStr) {
+                console.warn("Coordenadas no disponibles en AsyncStorage");
+                return [];
+            }
+
+            // Convertir a número (el backend lo espera así)
+            const lat = parseFloat(latStr);
+            const lon = parseFloat(lonStr);
+
+            const response = await axios.get(`${API_URL}/cercanos`, {
+                params: { q: query, lat, lon },
             });
 
             // Verificar estructura de la respuesta

@@ -141,7 +141,7 @@ const LoginScreen = () => {
           await AsyncStorage.setItem("idUsuario", data.usuario.idUsuario.toString());
           await AsyncStorage.setItem("nombreUsuario", data.usuario.nombres)
           await AsyncStorage.setItem("nombreUsuario", data.usuario.nombres)
-          await AsyncStorage.setItem("profile", "profile.png");
+          await AsyncStorage.setItem("perfil", data.usuario.rutaImagen);
           // Configura el token para futuras peticiones
           axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
           navigation.navigate("Home")

@@ -1,4 +1,3 @@
-// hooks/useGoogleAuth.ts
 import { useState, useEffect, useCallback } from "react";
 import {
     GoogleSignin,
@@ -41,7 +40,12 @@ export const useGoogleAuth = () => {
 
     const signOut = useCallback(async () => {
         try {
+            // Revocacion de sesion
+            await GoogleSignin.revokeAccess();
+
+            // Cerar sesion
             await GoogleSignin.signOut();
+
             return { success: true };
         } catch (error) {
             return { success: false, error };

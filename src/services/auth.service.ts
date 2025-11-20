@@ -6,9 +6,7 @@ interface Usuario {
     idUsuario: number;
     nombres: string;
     correoElectronico: string;
-    imagen?: {
-        nombreArchivo?: string;
-    } | null;
+    rutaImagen: string;
 }
 
 interface LoginResponse {

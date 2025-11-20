@@ -21,13 +21,13 @@ type GeneralHeaderProps = {
 const GeneralHeader = ({ screen }: GeneralHeaderProps) => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const { theme } = useTheme()
-    const [profile, setProfile] = useState("");
+    const [profile, setProfile] = useState<string | null>(null);
     const { changed } = useProfile()
 
     useEffect(() => {
         const obtenerPerfil = async () => {
-            const perfil = await AsyncStorage.getItem("profile");
-            setProfile(perfil || "profile.png");
+            const perfil = await AsyncStorage.getItem("perfil");
+            setProfile(perfil);
         };
         obtenerPerfil();
     }, [changed]); // cada vez que cambia el contexto
@@ -42,7 +42,7 @@ const GeneralHeader = ({ screen }: GeneralHeaderProps) => {
                 <Text style={[styles.GH_title, { color: theme.text }]}>{screen}</Text>
 
                 <Image
-                    source={{ uri: `https://integracion.test-drive.org/uploads/${profile}` }}
+                    source={{ uri: `${profile}` }}
                     style={[styles.GH_userImage, { backgroundColor: "#fff" }]}
                 />
             </View>

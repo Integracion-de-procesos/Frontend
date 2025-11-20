@@ -4,6 +4,7 @@ import { useGoogleAuth } from "../hooks/googleAuth.hook";
 import { googleLoginRequest } from "../services/auth.service";
 import { googleStyles as styles } from "../styles/googleButton.styles";
 import { useTheme } from "../contexts/theme.context";
+import { useLanguage } from "../contexts/languaje.context";
 
 interface Props {
     onLoginSuccess?: (data: any) => void;
@@ -12,6 +13,7 @@ interface Props {
 const GoogleAuthButton: React.FC<Props> = ({ onLoginSuccess }) => {
     const { signIn, loading, error } = useGoogleAuth();
     const { theme } = useTheme();
+    const { t } = useLanguage()
 
     const handlePress = async () => {
         const googleData = await signIn();
@@ -19,7 +21,7 @@ const GoogleAuthButton: React.FC<Props> = ({ onLoginSuccess }) => {
 
         const idToken = googleData.idToken;
         if (!idToken) return;
-        
+
         const backendResponse = await googleLoginRequest(idToken);
 
         // Entrega la sesion completa a quien use el boton
@@ -44,7 +46,7 @@ const GoogleAuthButton: React.FC<Props> = ({ onLoginSuccess }) => {
                             style={styles.icon}
                         />
                         <Text style={[styles.text, { color: theme.text }]}>
-                            Iniciar sesión con Google
+                            {t("login_google")}
                         </Text>
                     </View>
                 )}

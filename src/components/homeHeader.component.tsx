@@ -12,14 +12,14 @@ const HomeHeader = () => {
     const { setVideos } = useVideos(); // Actualiza la lista global
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(false);
-    const [profile, setProfile] = useState("");
+    const [profile, setProfile] = useState<string | null>(null);
     const { changed } = useProfile()
     const { t } = useLanguage()
 
     useEffect(() => {
         const obtenerPerfil = async () => {
-            const perfil = await AsyncStorage.getItem("profile");
-            setProfile(perfil || "profile.png");
+            const perfil = await AsyncStorage.getItem("perfil");
+            setProfile(perfil);
         };
         obtenerPerfil();
     }, [changed]); // cada vez que cambia el contexto
@@ -65,9 +65,7 @@ const HomeHeader = () => {
 
             <TouchableOpacity>
                 <Image
-                    source={{
-                        uri: `https://integracion.test-drive.org/uploads/${profile}`,
-                    }}
+                    source={{ uri: `${profile}`, }}
                     style={[styles.HH_userImage, { backgroundColor: "#fff" }]}
                 />
             </TouchableOpacity>

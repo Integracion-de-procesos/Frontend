@@ -32,8 +32,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             // al hacer login se guarda el idUsusario para futuras peticiones 
             await AsyncStorage.setItem("idUsuario", data.usuario.idUsuario.toString());
             await AsyncStorage.setItem("nombreUsuario", data.usuario.nombres)
-            const img_profile = data.usuario.imagen?.nombreArchivo ?? "profile.png";
-            await AsyncStorage.setItem("profile", img_profile);
+            await AsyncStorage.setItem("perfil", data.usuario.rutaImagen);
             // Configura el token para futuras peticiones HTTP
             axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`; // <-----------------
         } catch (error: any) {
@@ -46,16 +45,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Cerrar sesión
     const logout = async () => {
         try {
-            // Cerrar sesion en servidor
             await logoutRequest();
+
+            await AsyncStorage.multiRemove([
+                "token",
+                "idUsuario",
+                "nombreUsuario",
+                "perfil"
+            ]);
+
             setToken(null);
-            await AsyncStorage.removeItem("token");
             delete axios.defaults.headers.common["Authorization"];
 
-            // Cerrar sesion en Google
-            if (userInfo) {
-                await signOut()
+            if (!!userInfo) {
+                await signOut();
             }
+
         } catch (error) {
             throw new Error("Error al cerrar sesión");
         }
