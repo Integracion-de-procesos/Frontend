@@ -45,22 +45,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Cerrar sesión
     const logout = async () => {
         try {
+            // Cerrar sesion en servidor
             await logoutRequest();
-
+            setToken(null);
             await AsyncStorage.multiRemove([
                 "token",
                 "idUsuario",
                 "nombreUsuario",
                 "perfil"
             ]);
-
-            setToken(null);
             delete axios.defaults.headers.common["Authorization"];
 
-            if (!!userInfo) {
-                await signOut();
-            }
-
+            // Cerrar sesion en Google
+            await signOut()
         } catch (error) {
             throw new Error("Error al cerrar sesión");
         }

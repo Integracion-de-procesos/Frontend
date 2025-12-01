@@ -1,4 +1,9 @@
 {
+    "nav_home" : "Home",
+    "nav_record" : "Record",
+    "nav_location" : "Location",
+    "nav_settings" : "Settings",
+
     "galery_permission1" : "Required permit",
     "galery_permission2" : "Permission is required to access the gallery",
     "galery_selectError1" : "Attention",

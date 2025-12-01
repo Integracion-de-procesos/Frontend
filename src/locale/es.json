@@ -1,4 +1,9 @@
 {
+    "nav_home" : "Principal",
+    "nav_record" : "Historial",
+    "nav_location" : "Ubicacion",
+    "nav_settings" : "Configuracion",
+
     "galery_permission1" : "Permiso requerido",
     "galery_permission2" : "Se necesita permiso para acceder a la galeria",
     "galery_selectError1" : "Atencion",

@@ -1,54 +1,77 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
+
 import HomeScreen from "../screens/home.screen";
 import RecordScreen from "../screens/record.screen";
 import SettingsScreen from "../screens/settings.screen";
 import LocationScreen from "../screens/location.screen";
 
+import { useLanguage } from "../contexts/languaje.context";
 import { useTheme } from "../contexts/theme.context";
 
 const Tab = createBottomTabNavigator();
-/* 
-  > A pesar de que "Principal", "Historial", "Suscripciones" y "Locacion" son vistas, estas se 
-    comportan como componentes dentro del BottomNavigationBar, ya que estas "vistas" no contienen 
-    el componente BottomNavigationBar, sino que BottomNavigationBar los contiene a ellos.
-
-  > Esto difiere de Flutter ya que en Flutter el BottomNavigationBar vive dentro de un screen. 
-    En React Native vive como una estructura externa que define el flujo de navegación.
-*/
 
 export default function BottomNavigator() {
-  const { isDark } = useTheme()
+  const { isDark } = useTheme();
+  const { t } = useLanguage();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: isDark ? "#ffffffff" : "#000",
-        tabBarInactiveTintColor: isDark ? "#979797ff" : "#5c5c5cff",
+        tabBarActiveTintColor: isDark ? "#ffffff" : "#000000",
+        tabBarInactiveTintColor: isDark ? "#979797" : "#5c5c5c",
         tabBarStyle: {
           height: "12%",
-          backgroundColor: isDark ? "#434343ff" : "#fff",
+          backgroundColor: isDark ? "#434343" : "#ffffff",
         },
+
         tabBarIcon: ({ color, size = 30 }) => {
           let iconName: keyof typeof Feather.glyphMap = "circle";
 
-          if (route.name === "Principal") iconName = "home";
-          else if (route.name === "Historial") iconName = "list";
-          else if (route.name === "Ubicacion") iconName = "map-pin";
-          else if (route.name === "Configuracion") iconName = "settings";
+          if (route.name === "Home") iconName = "home";
+          else if (route.name === "Record") iconName = "list";
+          else if (route.name === "Location") iconName = "map-pin";
+          else if (route.name === "Settings") iconName = "settings";
 
-          return (
-            <Feather name={iconName} size={size} color={color} />
-          );
+          return <Feather name={iconName} size={size} color={color} />;
         },
       })}
     >
-      <Tab.Screen name="Principal" component={HomeScreen} />
-      <Tab.Screen name="Historial" component={RecordScreen} />
-      <Tab.Screen name="Ubicacion" component={LocationScreen} />
-      <Tab.Screen name="Configuracion" component={SettingsScreen} />
-    </Tab.Navigator >
+
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: t("nav_home"),
+        }}
+      />
+
+      <Tab.Screen
+        name="Record"
+        component={RecordScreen}
+        options={{
+          tabBarLabel: t("nav_record"),
+        }}
+      />
+
+      <Tab.Screen
+        name="Location"
+        component={LocationScreen}
+        options={{
+          tabBarLabel: t("nav_location"),
+        }}
+      />
+
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: t("nav_settings"),
+        }}
+      />
+    </Tab.Navigator>
   );
 }

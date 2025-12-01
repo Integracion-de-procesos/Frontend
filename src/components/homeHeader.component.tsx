@@ -30,6 +30,7 @@ const HomeHeader = () => {
             setLoading(true);
             const resultados = await YouTubeService.buscarVideos(query.trim());
             setVideos(resultados); // Actualiza el contexto global
+            setQuery("")
         } catch (error: any) {
             console.error("Error al buscar videos:", error.message);
         } finally {
@@ -65,8 +66,8 @@ const HomeHeader = () => {
 
             <TouchableOpacity>
                 <Image
-                    source={{ uri: `${profile}`, }}
-                    style={[styles.HH_userImage, { backgroundColor: "#fff" }]}
+                    source={{ uri: `${profile}` }}
+                    style={[styles.HH_userImage]}
                 />
             </TouchableOpacity>
         </View>
